@@ -5,48 +5,28 @@ import nme.events.Event;
 import org.haxe.bubble.RenderUtil;
 import org.haxe.bubble.UIElement;
 class Field extends UIElement {
-    private var colors:Array<CellType>;
-    private var cells:Array<Array<CellType>>;
-    private var selected:Bool;
-    private var selectedIndex:Array<Int>;
+    public var data:FieldData;
 
     public function new(n:Int) {
         super();
-        colors = [CellType.BLUE, CellType.GREEN, CellType.PURPLE, CellType.RED, CellType.YELLOW];
-        selected = false;
-        refill(n, n);
+        data = new FieldData(n);
         addEventListener(MouseEvent.MOUSE_DOWN, clickHandler);
         addEventListener(TouchEvent.TOUCH_TAP, clickHandler);
     }
 
     public function getCellSize():Float {
-        return width / cells.length;
+        return width / data.cells.length;
     }
 
     private function clickHandler(event:MouseEvent) {
-        if (selected) {
-            doRemove(selectedIndex[0], selectedIndex[1]);
-        } else {
-            var i = Math.floor(event.localX / getCellSize());
-            selectedIndex = [i, cells[i].length - 1 - Math.floor(event.localY / getCellSize())];
-        }
-        selected = !selected;
+        var i = Math.floor(event.localX / getCellSize());
+        var j = data.cells[i].length - 1 - Math.floor(event.localY / getCellSize());
+        data.doClick(i, j);
         redraw();
     }
 
     public function clearField() {
-        refill(cells.length, cells[0].length);
-    }
-
-    private function refill(n:Int, m:Int) {
-        cells = new Array<Array<CellType>>();
-        for (i in 0...n) {
-            var row = new Array<CellType>();
-            for (j in 0...m) {
-                row.push(colors[Math.floor(Math.random() * colors.length)]);
-            }
-            cells.push(row);
-        }
+        data.clearField();
     }
 
     public override function resize(w:Float, h:Float) {
@@ -62,16 +42,14 @@ class Field extends UIElement {
         graphics.beginFill(0, 0);
         graphics.drawRect(0, 0, w, h);
         graphics.endFill();
-        for (i in 0...cells.length) {
-            for (j in 0...cells[i].length) {
-                renderCell(i, j, cells[i][j]);
+        for (i in 0...data.cells.length) {
+            for (j in 0...data.cells[i].length) {
+                renderCell(i, j, data.cells[i][j]);
             }
         }
 
-        if (selected) {
-            var x = selectedIndex[0];
-            var y = selectedIndex[1];
-            drawSelection(x, y, cells[x][y]);
+        if (data.selected) {
+            data.searchInSelection(drawSelectionBorderCallback);
         }
     }
 
@@ -86,58 +64,8 @@ class Field extends UIElement {
         RenderUtil.drawCircle(graphics, circleX, circleY, size / 2, color);
     }
 
-    private function drawSelection(startI:Int, startJ:Int, type:CellType) {
-        var mark:Array<Array<Bool>> = new Array<Array<Bool>>();
-        for (i in 0...cells.length) {
-            var row = new Array<Bool>();
-            for (j in 0...cells[i].length) {
-                row.push(false);
-            }
-            mark.push(row);
-        }
-
-        var q = [[startI, startJ]];
-        while (q.length > 0) {
-            var i = q[0][0];
-            var j = q[0][1];
-            q.shift();
-            if (mark[i][j]) continue;
-            mark[i][j] = true;
-
-            if (canMove(i, j - 1, type)) {
-                q.push([i, j - 1]);
-            } else {
-                drawSelectionBorder(i, j, Side.BOTTOM);
-            }
-            if (canMove(i - 1, j, type)) {
-                q.push([i - 1, j]);
-            } else {
-                drawSelectionBorder(i, j, Side.LEFT);
-            }
-            if (canMove(i, j + 1, type)) {
-                q.push([i, j + 1]);
-            } else {
-                drawSelectionBorder(i, j, Side.TOP);
-            }
-            if (canMove(i + 1, j, type)) {
-                q.push([i + 1, j]);
-            } else {
-                drawSelectionBorder(i, j, Side.RIGHT);
-            }
-        }
-    }
-
-    private function checkRange(i:Int, j:Int):Bool {
-        var correctI = 0 <= i && i < cells.length;
-        var correctJ = 0 <= j && (correctI && j < cells[i].length);
-        return correctI && correctJ;
-    }
-
-    private function canMove(i:Int, j:Int, type:CellType):Bool {
-        return checkRange(i, j) && cells[i][j] == type;
-    }
-
-    private function drawSelectionBorder(i:Int, j:Int, side:Side) {
+    private function drawSelectionBorderCallback(i:Int, j:Int, side:Side):Void {
+        if (side == null) return;
         var bottomLeftX = i * getCellSize() + 1;
         var bottomLeftY = height - j * getCellSize();
         bottomLeftX = Math.max(1, bottomLeftX);
@@ -171,9 +99,5 @@ class Field extends UIElement {
         x = Math.max(1, Math.min(x, width - 1));
         y = Math.max(1, Math.min(y, height - 1));
         graphics.lineTo(x, y);
-    }
-
-    private function doRemove(i:Int, j:Int) {
-        // todo
     }
 }
