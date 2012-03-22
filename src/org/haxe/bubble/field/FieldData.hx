@@ -1,11 +1,14 @@
 package org.haxe.bubble.field;
-class FieldData {
+import org.haxe.bubble.events.ScoreEvent;
+import nme.events.EventDispatcher;
+class FieldData extends EventDispatcher {
     private var colors:Array<CellType>;
     private var selectedIndex:Array<Int>;
     public var cells:Array<Array<CellType>>;
     public var selected:Bool;
 
     public function new(n:Int) {
+        super();
         colors = [CellType.BLUE, CellType.GREEN, CellType.PURPLE, CellType.RED, CellType.YELLOW];
         selected = false;
         refill(n, n);
@@ -26,6 +29,15 @@ class FieldData {
         }
         selected = !selected;
         selectedIndex = selected ? [i, j] : [-1, -1];
+        var score = 0;
+        searchInSelection(function(curI:Int, curJ:Int, side:Side):Void {
+            if (side == null) ++score;
+        });
+        dispatchEvent(new ScoreEvent(score * (score - 1), true));
+        if (score <= 1) {
+            selected = false;
+            selectedIndex = [-1, -1];
+        }
     }
 
     public function clearField() {
@@ -44,6 +56,9 @@ class FieldData {
     }
 
     public function searchInSelection(processor:Int -> Int -> Side -> Void):Void {
+        if (!selected) {
+            return;
+        }
         var mark:Array<Array<Bool>> = new Array<Array<Bool>>();
         for (i in 0...cells.length) {
             var row = new Array<Bool>();

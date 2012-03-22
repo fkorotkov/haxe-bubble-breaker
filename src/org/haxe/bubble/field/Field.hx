@@ -12,6 +12,9 @@ class Field extends UIElement {
         data = new FieldData(n);
         addEventListener(MouseEvent.MOUSE_DOWN, clickHandler);
         addEventListener(TouchEvent.TOUCH_TAP, clickHandler);
+        data.addEventListener("scoreEvent", function(event:Event){
+            dispatchEvent(event.clone());
+        });
     }
 
     public function getCellSize():Float {

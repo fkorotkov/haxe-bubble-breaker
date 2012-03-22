@@ -1,4 +1,5 @@
 package org.haxe.bubble;
+import org.haxe.bubble.events.ScoreEvent;
 import flash.display.StageScaleMode;
 import org.haxe.bubble.field.Field;
 import nme.text.TextField;
@@ -10,12 +11,22 @@ class Game extends UIElement {
     var field:Field;
     var scoreField:TextField;
     var score:Int;
+    var scoreForSelection:Int;
     public function new() {
         super();
         field = new Field(11);
         scoreField = new TextField();
         score = 0;
+        scoreForSelection = 0;
         addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
+        field.addEventListener("scoreEvent", function(event:ScoreEvent) {
+            if (event.forSelection) {
+                scoreForSelection = event.score;
+            } else {
+                score += event.score;
+            }
+            updateScore();
+        });
     }
 
     private function onAddedToStage(event:Event) {
@@ -55,7 +66,11 @@ class Game extends UIElement {
     }
 
     private function updateScore() {
-        scoreField.text = "Score: " + score;
+        var msg = "Score: " + score;
+        if (scoreForSelection > 0) {
+            msg += " + " + scoreForSelection;
+        }
+        scoreField.text = msg;
         scoreField.height = scoreField.textHeight + 2; // gutter
     }
 }
