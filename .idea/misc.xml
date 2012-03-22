@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="EntryPointsManager">
+    <entry_points version="2.0" />
+  </component>
+  <component name="IdProvider" IDEtalkID="5D0891C8AA0569730842A02B1907D643" />
   <component name="ProjectKey">
-    <option name="state" value="project://c2431a8e-0783-434a-8ac1-69a8b34b9e3b" />
+    <option name="state" value="https://github.com/fkorotkov/haxe-bubble-breaker.git" />
+  </component>
+  <component name="ProjectResources">
+    <default-html-doctype>http://www.w3.org/1999/xhtml</default-html-doctype>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="haXe 2.08" project-jdk-type="haXe SDK">
     <output url="file://$PROJECT_DIR$/out" />

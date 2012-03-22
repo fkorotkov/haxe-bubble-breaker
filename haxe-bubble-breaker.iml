@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="HAXE_MODULE" version="4">
   <component name="HaxeModuleSettingsStorage">
+    <option name="arguments" value="-lib nme -swf-version 10.1" />
     <option name="flexSdkName" value="4.5.1" />
+    <option name="mainClass" value="Main" />
+    <option name="outputFileName" value="Main.swf" />
     <option name="target" value="Flash" />
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="false">
