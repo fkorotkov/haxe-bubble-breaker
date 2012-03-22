@@ -7,7 +7,7 @@ class CellColorUtil {
             case CellType.GREEN:
             return 0x00FF00;
             case CellType.PURPLE:
-            return 0xE6E6FA;
+            return 0xFF00FF;
             case CellType.RED:
             return 0xFF0000;
             case CellType.YELLOW:

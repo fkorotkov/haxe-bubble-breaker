@@ -111,6 +111,40 @@ class FieldData extends EventDispatcher {
     }
 
     function doRemove() {
-        // todo
+        var score = 0;
+        searchInSelection(function(curI:Int, curJ:Int, side:Side):Void {
+            if (side == null) ++score;
+            cells[curI][curJ] = CellType.EMPTY;
+        });
+        dispatchEvent(new ScoreEvent(score * (score - 1), false));
+        for (i in 0...cells.length) {
+            var j = 0;
+            for (k in 0...cells[i].length) {
+                if (cells[i][k] == CellType.EMPTY) continue;
+                var tmp = cells[i][k];
+                cells[i][k] = CellType.EMPTY;
+                cells[i][j] = tmp;
+                ++j;
+            }
+        }
+        var i = cells.length - 1;
+        while (i >= 0) {
+            if (!isEmpty(cells[i]) || i == 0) {
+                --i;
+                continue;
+            }
+            for (j in 0...cells[i].length) {
+                cells[i][j] = cells[i - 1][j];
+                cells[i - 1][j] = CellType.EMPTY;
+            }
+            --i;
+        }
+    }
+
+    function isEmpty(column:Array<CellType>) {
+        for (type in column) {
+            if (type != CellType.EMPTY) return false;
+        }
+        return true;
     }
 }
