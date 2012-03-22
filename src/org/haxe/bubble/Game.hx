@@ -1,4 +1,6 @@
 package org.haxe.bubble;
+import nme.events.TouchEvent;
+import nme.events.MouseEvent;
 import org.haxe.bubble.events.ScoreEvent;
 import flash.display.StageScaleMode;
 import org.haxe.bubble.field.Field;
@@ -10,6 +12,7 @@ import nme.display.MovieClip;
 class Game extends UIElement {
     var field:Field;
     var scoreField:TextField;
+    var newGameButton:CircleButton;
     var score:Int;
     var scoreForSelection:Int;
     public function new() {
@@ -18,6 +21,7 @@ class Game extends UIElement {
         scoreField = new TextField();
         score = 0;
         scoreForSelection = 0;
+        newGameButton = new CircleButton("new game");
         addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
         field.addEventListener("scoreEvent", function(event:ScoreEvent) {
             if (event.forSelection) {
@@ -27,6 +31,8 @@ class Game extends UIElement {
             }
             updateScore();
         });
+        newGameButton.addEventListener(MouseEvent.MOUSE_DOWN, clickHandler);
+        newGameButton.addEventListener(TouchEvent.TOUCH_TAP, clickHandler);
     }
 
     private function onAddedToStage(event:Event) {
@@ -35,8 +41,14 @@ class Game extends UIElement {
         stage.addEventListener(Event.RESIZE, onResize);
         addChild(field);
         addChild(scoreField);
+        addChild(newGameButton);
 
         updateScore();
+        resize(stage.stageWidth, stage.stageHeight);
+    }
+
+    private function clickHandler(event:MouseEvent) {
+        field.clearField();
         resize(stage.stageWidth, stage.stageHeight);
     }
 
@@ -48,19 +60,25 @@ class Game extends UIElement {
         graphics.clear();
         super.resize(w, h);
         scoreField.x = 5;
-        scoreField.y = 5;
+        scoreField.y = 12;
+
+        var topPanelHeight = scoreField.textHeight + 14;
+
+        newGameButton.y = 5;
+        newGameButton.x = w - 85;
+        newGameButton.resize(80, topPanelHeight);
 
         graphics.lineStyle(1);
-        graphics.moveTo(0, 10 + scoreField.textHeight);
-        graphics.lineTo(w, 10 + scoreField.textHeight);
+        graphics.moveTo(0, 10 + topPanelHeight);
+        graphics.lineTo(w, 10 + topPanelHeight);
 
-        h -= 10 + scoreField.textHeight;
+        h -= 10 + topPanelHeight;
         var fieldSize = Math.min(w, h);
         var fieldX = (w - fieldSize) / 2;
         var fieldY = (h - fieldSize) / 2;
 
         field.x = fieldX;
-        field.y = 10 + scoreField.textHeight + fieldY;
+        field.y = 10 + topPanelHeight + fieldY;
 
         field.resize(fieldSize, fieldSize);
     }
