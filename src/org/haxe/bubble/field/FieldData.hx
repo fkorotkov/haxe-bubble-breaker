@@ -1,4 +1,6 @@
 package org.haxe.bubble.field;
+import haxe.remoting.DelayedConnection;
+import nme.utils.Timer;
 import org.haxe.bubble.events.ScoreEvent;
 import nme.events.EventDispatcher;
 class FieldData extends EventDispatcher {
@@ -117,6 +119,10 @@ class FieldData extends EventDispatcher {
             cells[curI][curJ] = CellType.EMPTY;
         });
         dispatchEvent(new ScoreEvent(score * (score - 1), false));
+        adjustField();
+    }
+
+    function adjustField() {
         for (i in 0...cells.length) {
             var j = 0;
             for (k in 0...cells[i].length) {

@@ -1,5 +1,7 @@
 -main Main
 -swf-version 10.1
+-debug
+-D fdb
 -cp src
--swf main.swf
+-swf out/test239.swf
 -lib nme

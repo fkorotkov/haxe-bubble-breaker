@@ -1,6 +1,6 @@
 package org.haxe.bubble.field;
 class CellColorUtil {
-    public static function get(type:CellType):UInt {
+    public static function get(type:CellType):Int {
         switch (type) {
             case CellType.BLUE:
             return 0x0000FF;

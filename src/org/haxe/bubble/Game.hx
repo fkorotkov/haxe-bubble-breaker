@@ -1,8 +1,8 @@
 package org.haxe.bubble;
+import nme.display.StageScaleMode;
 import nme.events.TouchEvent;
 import nme.events.MouseEvent;
 import org.haxe.bubble.events.ScoreEvent;
-import flash.display.StageScaleMode;
 import org.haxe.bubble.field.Field;
 import nme.text.TextField;
 import nme.display.StageAlign;
@@ -15,6 +15,7 @@ class Game extends UIElement {
     var newGameButton:CircleButton;
     var score:Int;
     var scoreForSelection:Int;
+
     public function new() {
         super();
         field = new Field(11);
@@ -42,7 +43,6 @@ class Game extends UIElement {
         addChild(field);
         addChild(scoreField);
         addChild(newGameButton);
-
         updateScore();
         resize(stage.stageWidth, stage.stageHeight);
     }
@@ -66,8 +66,8 @@ class Game extends UIElement {
 
         newGameButton.y = 5;
         newGameButton.x = w - 85;
-        newGameButton.resize(80, topPanelHeight);
 
+        newGameButton.resize(80, topPanelHeight);
         graphics.lineStyle(1);
         graphics.moveTo(0, 10 + topPanelHeight);
         graphics.lineTo(w, 10 + topPanelHeight);
