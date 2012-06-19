@@ -1,0 +1,16 @@
+<project name="NME-Build" default="buildAll">
+    <property name="haxelibPath" location="C:\Motion-Twin\haxe\haxelib.exe"/>
+    <property name="nmmlFile" location="bubble-breaker.nmml"/>
+
+    <target name="buildAll" depends="buildFlash">
+        <echo message="Building completed!"/>
+    </target>
+
+    <target name="buildFlash">
+        <echo message="NME Test Flash"/>
+        <exec executable="${haxelibPath}">
+            <arg line='run nme build "${nmmlFile}" flash -debug'/>
+        </exec>
+    </target>
+
+</project> 
